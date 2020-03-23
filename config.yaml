@@ -38,6 +38,36 @@ auth:
     enabled: false
     cryptoKey:
 
+singleuser:
+  
+  networkTools:  #new added content
+    image:
+      name: jupyterhub/k8s-network-tools
+      tag: '0.8.2'
+  cloudMetadata:
+    enabled: false
+    ip: 169.254.169.254
+  networkPolicy:
+    enabled: false
+    egress: 
+    - to:
+          - ipBlock:
+              cidr: 0.0.0.0/0
+              except:
+                - 169.254.169.254/32
+  events: true
+  extraAnnotations: {}
+  extraLabels:
+    hub.jupyter.org/network-access-hub: 'true'
+  extraEnv:
+    EDITOR: "vim"    #newly added code 
+  lifecycleHooks: []
+  initContainers: []
+  extraContainers: []
+  uid: 1000
+  fsGid: 100
+  serviceAccountName: #end newly added content 
+
   storage:
     type: dynamic
     extraLabels: {}
@@ -64,12 +94,42 @@ auth:
       volumeNameTemplate: volume-{username}{servername}
       storageAccessModes: [ReadWriteMany]
 
+#singleuser:  old location
 
-singleruser:
   image: # custom image that contains a set of pre-installed libraries and tools
-    name: kiwistorageguy/c7-rapidfile
+  #  name: kiwistorageguy/c7-rapidfile
+    name: emilypotyraj/pure-k8s-singleuser
     tag: latest
     pullPolicy: IfNotPresent
+  imagePullSecret:   #newly added code
+    enabled: false
+    registry:
+    username:
+    email:
+    password:
+  startTimeout: 300
+  cpu:
+    limit:
+    guarantee:
+  memory:
+    limit:
+    guarantee: 4G
+  extraResource:
+    limits: {}
+    guarantees: {}
+  cmd: jupyterhub-singleuser
+  defaultUrl: "/lab"   #newly added code ends
+
+
+
+
+
+
+
+
+
+
+
     #
     #
     #
@@ -85,4 +145,10 @@ singleuser:
         mountPath: /shared-datasets
 
 
-#
+cull:  #this tool kills idle notebooks
+  enabled: true
+  users: false
+  timeout: 600   # every server idle for > 10 min will be shut down
+  every: 60   # check for inactivity every 60 sec
+  concurrency: 10
+  maxAge: 0#
