@@ -1,0 +1,88 @@
+hub:
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      nodePort:
+    loadBalancerIP:
+  baseUrl: /
+  cookieSecret:
+  publicURL:
+  uid: 1000
+  fsGid: 1000
+  nodeSelector: {}
+  concurrentSpawnLimit: 64
+  consecutiveFailureLimit: 5
+  activeServerLimit:
+  deploymentStrategy:
+
+
+proxy:
+  secretToken: "0c1a22d09318601f135374cab05983fca890a5c5dc2ab9c1f298377e06eaf588"
+
+auth:
+  type: dummy
+  whitelist:
+    users:
+  admin:
+    access: true
+    users: 
+  dummy:
+    password:
+  ldap:
+    dn:
+      search: {}
+      user: {}
+    user: {}
+  state:
+    enabled: false
+    cryptoKey:
+
+  storage:
+    type: dynamic
+    extraLabels: {}
+    extraVolumes:   # access to shared datasets saved on FlashBlade
+      - name: fbai-shared1
+        persistentVolumeClaim:
+          claimName: fbai-shared-volume1  # persistent volume claim created in the cluste
+    extraVolumeMounts: 
+      - name: shared-ai-datasets
+        mountPath: /shai  
+    extraVolumeMounts:
+      - name: shared-datasets
+        mountPath: /home/shared   # mount path for shared datasets with each user's environment
+    static:
+      pvcName:
+      subPath: /home/{username}   # user home directory
+      type: static
+      uid: 0
+    capacity: 10Gi
+    homeMountPath: /home/jovyan
+    dynamic:   # set FlashBlade as the storage target for PVCs of user environments
+      storageClass: pure-file   # storage class created in the cluster
+      pvcNameTemplate: claim-{username}{servername}
+      volumeNameTemplate: volume-{username}{servername}
+      storageAccessModes: [ReadWriteMany]
+
+
+singleruser:
+  image: # custom image that contains a set of pre-installed libraries and tools
+    name: kiwistorageguy/c7-rapidfile
+    tag: latest
+    pullPolicy: IfNotPresent
+    #
+    #
+    #
+    
+singleuser:
+  storage:
+    extraVolumes:
+      - name: jupyterhub-shared1
+        persistentVolumeClaim:
+          claimName: jupyterhub-shared-volume1
+    extraVolumeMounts:
+      - name: jupyterhub-shared1
+        mountPath: /shared-datasets
+
+
+#
