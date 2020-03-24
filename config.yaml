@@ -39,48 +39,22 @@ auth:
     cryptoKey:
 
 singleuser:
-  
-  networkTools:  #new added content
+  networkTools:
     image:
       name: jupyterhub/k8s-network-tools
-      tag: '0.8.2'
-  cloudMetadata:
-    enabled: false
-    ip: 169.254.169.254
-  networkPolicy:
-    enabled: false
-    egress: 
-    - to:
-          - ipBlock:
-              cidr: 0.0.0.0/0
-              except:
-                - 169.254.169.254/32
-  events: true
-  extraAnnotations: {}
-  extraLabels:
-    hub.jupyter.org/network-access-hub: 'true'
-  extraEnv:
-    EDITOR: "vim"    #newly added code 
-  lifecycleHooks: []
-  initContainers: []
-  extraContainers: []
-  uid: 1000
-  fsGid: 100
-  serviceAccountName: #end newly added content 
+      tag: '0.8.2' 
+
 
   storage:
     type: dynamic
-    extraLabels: {}
-    extraVolumes:   # access to shared datasets saved on FlashBlade
-      - name: fbai-shared1
+    extraVolumes:
+      - name: jupyterhub-shared1
         persistentVolumeClaim:
-          claimName: fbai-shared-volume1  # persistent volume claim created in the cluste
-    extraVolumeMounts: 
-      - name: shared-ai-datasets
-        mountPath: /shai  
+          claimName: jupyterhub-shared-volume1
     extraVolumeMounts:
-      - name: shared-datasets
-        mountPath: /home/shared   # mount path for shared datasets with each user's environment
+      - name: jupyterhub-shared1
+        mountPath: /shared-datasets
+ 
     static:
       pvcName:
       subPath: /home/{username}   # user home directory
@@ -119,30 +93,6 @@ singleuser:
     guarantees: {}
   cmd: jupyterhub-singleuser
   defaultUrl: "/lab"   #newly added code ends
-
-
-
-
-
-
-
-
-
-
-
-    #
-    #
-    #
-    
-singleuser:
-  storage:
-    extraVolumes:
-      - name: jupyterhub-shared1
-        persistentVolumeClaim:
-          claimName: jupyterhub-shared-volume1
-    extraVolumeMounts:
-      - name: jupyterhub-shared1
-        mountPath: /shared-datasets
 
 
 cull:  #this tool kills idle notebooks
