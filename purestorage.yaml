@@ -7,8 +7,8 @@ metadata:
     kubeaddons.mesosphere.io/name: pure-csi-1.0.8
     kubeaddons.mesosphere.io/provides: storageclass
   annotations:
-    catalog.kubeaddons.mesosphere.io/addon-revision: "0.4.0-1"
-    appversion.kubeaddons.mesosphere.io/pure-csi-1.0.8: "0.4.0"
+    catalog.kubeaddons.mesosphere.io/addon-revision: "1.0.8"
+    appversion.kubeaddons.mesosphere.io/pure-csi-1.0.8: "1.0.8"
     values.chart.helm.kubeaddons.mesosphere.io/pure-csi-1.0.8: "https://raw.githubusercontent.com/mesosphere/charts/6c43b8ab10108fb1adba5c6dd10e800e5f1abdd0/stable/pure-csi-1.0.8/values.yaml"
 spec:
   namespace: pure-flash
@@ -17,8 +17,8 @@ spec:
         kubeaddons.mesosphere.io/name: defaultstorageclass-protection
   kubernetes:
     minSupportedVersion: v1.15.6
-  cloudProvider:
-    - name: aws
+  storageProvider:
+    - name: pure
       enabled: true
   chartReference:
     chart: pure-csi-1.0.8
