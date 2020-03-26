@@ -4,14 +4,14 @@ kind: ClusterAddon
 metadata:
   name: pure-csi
   labels:
-    kubeaddons.mesosphere.io/name: pure-csi-1.0.8
+    kubeaddons.mesosphere.io/name: pure-csi
     kubeaddons.mesosphere.io/provides: storageclass
   annotations:
-    catalog.kubeaddons.mesosphere.io/addon-revision: "1.0.8"
+    catalog.kubeaddons.mesosphere.io/addon-revision: "5.0.8"
     appversion.kubeaddons.mesosphere.io/pure-csi-1.0.8: "1.0.8"
-    values.chart.helm.kubeaddons.mesosphere.io/pure-csi-1.0.8: "https://raw.githubusercontent.com/mesosphere/charts/6c43b8ab10108fb1adba5c6dd10e800e5f1abdd0/stable/pure-csi-1.0.8/values.yaml"
+    values.chart.helm.kubeaddons.mesosphere.io/pure-csi: "https://github.com/purestorage/helm-charts/blob/master/pure-csi/values.yaml"
 spec:
-  namespace: pure-flash
+  namespace: pure-csi
   requires:
     - matchLabels:
         kubeaddons.mesosphere.io/name: defaultstorageclass-protection
