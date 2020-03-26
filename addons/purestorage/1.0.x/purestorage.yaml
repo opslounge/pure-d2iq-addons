@@ -1,0 +1,37 @@
+---
+apiVersion: kubeaddons.mesosphere.io/v1beta1
+kind: ClusterAddon
+metadata:
+  name: pure-csi
+  labels:
+    kubeaddons.mesosphere.io/name: pure-csi
+    kubeaddons.mesosphere.io/provides: storageclass
+  annotations:
+    catalog.kubeaddons.mesosphere.io/addon-revision: "5.0.8"
+    appversion.kubeaddons.mesosphere.io/pure-csi-1.0.8: "1.0.8"
+    values.chart.helm.kubeaddons.mesosphere.io/pure-csi: "https://github.com/purestorage/helm-charts/blob/master/pure-csi/values.yaml"
+spec:
+  namespace: pure-csi
+  requires:
+    - matchLabels:
+        kubeaddons.mesosphere.io/name: defaultstorageclass-protection
+  kubernetes:
+    minSupportedVersion: v1.15.6
+  storageProvider:
+    - name: pure
+      enabled: true
+  chartReference:
+    chart: pure-csi-1.0.8
+    repo: https://purestorage.github.io/helm-charts
+    version: 1.0.8
+    values: |
+      ---
+      resizer:
+        enabled: false
+      snapshotter:
+        enabled: true
+      provisioner:
+        enableVolumeScheduling: true
+      storageclass:
+        isDefault: true
+
